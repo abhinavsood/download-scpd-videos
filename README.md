@@ -13,6 +13,7 @@ Running
     python scrape.py [Name of the course as listed on SCPD]
 
 You can leave out your company's name from the name of the course on SCPD. So, for example, if the course name as listed on SCPD is "Your Company Name - Silicon Run Series XOXO1O8 - OO1 ", you can do
+
     python scrape.py "Silicon Run Series"
 
 Notes

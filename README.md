@@ -6,7 +6,7 @@ Installation
     sudo easy_install mechanize
     sudo easy_install BeautifulSoup
     sudo port install mimms
-    echo "my_username = \"[YOUR SUNETID]\"; my_password = \"[YOUR SUNET PASSWORD]\"" > passwords.py
+    echo "my_username = \"[YOUR ID]\"; my_password = \"[YOUR PASSWORD]\"" > passwords.py
 
 Running
 =======

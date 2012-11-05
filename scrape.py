@@ -1,12 +1,13 @@
 import re
 import os
-import passwords
 import sys
 import mechanize
 import cookielib
 from subprocess import Popen
 from BeautifulSoup import BeautifulSoup
 from multiprocessing import Pool
+# Import your id and password from a module outside version control
+import passwords
 
 def download(work):
 	if os.path.exists(work[1]):
@@ -39,30 +40,31 @@ if __name__ == '__main__':
 	br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
 
 	# Want debugging messages?
-	#br.set_debug_http(True)
-	#br.set_debug_redirects(True)
-	#br.set_debug_responses(True)
+	br.set_debug_http(False)
+	br.set_debug_redirects(False)
+	br.set_debug_responses(False)
 	
 	# User-Agent (this is cheating, ok?)
-	br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
+	br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4')]
 	
+	print "\r\nLogging in..."
 	# Open Stanford Center for Professional Development
-	rLogin = br.open("http://scpd.stanford.edu/portal/studentLogin.jsp")
-
+	br.open("http://scpd.stanford.edu/portal/studentLogin.jsp")
 	assert br.viewing_html()
 
-	# Import from a module outside of version control your SUNET id and password
+	# Import your id and password from a file outside version control
 	br.select_form(name="portalLogonFormPanel")
 	br["studentNumber"] = passwords.my_username
 	br["studentPassword"] = passwords.my_password
 	response = br.submit()
 	
+	print "\r\nLogged In!"
 	# After login, open the page that lists course
 	rLoggedIn = br.open("http://scpd.stanford.edu/portal/student/studentHome.do?method=load")
-	assert br.viewing_html()
 	
 	soup = BeautifulSoup(rLoggedIn)
 	
+	print "\r\nFinding the course you asked for..."
 	# get the name of the course from the command line arguments
 	course = re.compile(sys.argv[1])
 	
@@ -84,26 +86,37 @@ if __name__ == '__main__':
 	br["onlineResourceId"] = onlineResourceId
 	response = br.submit()
 	
-	# reached the preloader page, now what?
+	print "\r\nFound! Loading resources..."
+	# reached the preloader page, now what?	
 	br.select_form(nr=0)
-	
 	br.find_control("AuthInfo").disabled = False
 	br.find_control("MAC").disabled = False
 	br.find_control("MacKey").disabled = False
-
 	br.form.set_all_readonly(False)
+	response = br.submit()
 	
-	print br.form
-	print "\n\n_________________\n\n"
-	print br.attrs
+	## Rinse and repeat##
+	rLoggedInHome = br.open('http://scpd.stanford.edu/portal/student/studentHome.do?method=load')
 	
-	# results in authentication error
-	#response = br.submit()	
+	# select online resource form
+	br.select_form(name="portalOnlineResourceForm")
 	
-	#print response.read()
+	# remove readonly type from onlineResourceId
+	br.find_control("onlineResourceId").readonly = False
+	
+	# set onlineResourceId from link to videos of the requested course
+	br["onlineResourceId"] = onlineResourceId
+	response = br.submit()
+	
+	# reached the preloader page, but you know, what?
+	br.select_form(nr=0)
+	br.find_control("AuthInfo").disabled = False
+	br.find_control("MAC").disabled = False
+	br.find_control("MacKey").disabled = False
+	br.form.set_all_readonly(False)
+	response = br.submit()
 	
 	
-	'''
 	# Build up a list of lectures
 	links = []
 	for link in br.links(text="WMP"):
@@ -116,10 +129,11 @@ if __name__ == '__main__':
 		soup = BeautifulSoup(response.read())
 		video = soup.find('object', id='WMPlayer')['data']
 		video = re.sub("http","mms",video)
-		output_name = re.search(r"[a-z]+[0-9]+[a-z]?/[0-9]+",video).group(0).replace("/","_") + ".wmv"
+		output_name = os.path.basename(video)
+		
+		print "\r\nFound video:"+" "+output_name
 		videos.append((video, output_name))
 
 	# Make a thread pool and download 5 files at a time
 	p = Pool(processes=5)
 	p.map(download, videos)
-	'''

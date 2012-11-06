@@ -5,7 +5,7 @@ Installation
 
 To be able to use this Python script, you'll need mechanize, BeautifulSoup and mimmms.
 
-### On a Mac
+### On Mac
 
     sudo easy_install mechanize
     sudo easy_install BeautifulSoup
@@ -22,9 +22,7 @@ Running
 =======
     python scrape.py
 
-The script will prompt you for your username, password and the course that you're looking for. You can enter a part of the course name. You can leave out your company's name or course code from the name of the course on SCPD. So, for example, if the course name as listed on SCPD is "Your Company Name - Silicon Run Series XOXO1O8 - OO1 ", you can do
-
-    python scrape.py "Silicon Run Series"
+The script will prompt you for your username, password and the course that you're looking for. You can enter a part of the course name. You can leave out your company's name or course code from the name of the course on SCPD. So, for example, if the course name as listed on SCPD is "Your Company Name - Silicon Run Series XOXO1O8 - OO1 ", you can just enter 'Silicon Run' when prompted for course name.
 
 Notes
 =====

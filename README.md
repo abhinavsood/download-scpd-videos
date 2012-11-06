@@ -1,4 +1,4 @@
-Download online videos from SCPD for the courses you're enrolled in
+Download online videos from Stanford Center for Professional Development for the courses that you're enrolled in using your my*stanford*connection account.
 
 Installation
 ============

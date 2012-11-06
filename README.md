@@ -2,26 +2,36 @@ Download online videos from SCPD for the courses you're enrolled in
 
 Installation
 ============
-    git clone git://github.com/abhinavsood/scrape-scpd-videos.git
+
+To be able to use this Python script, you'll need mechanize, BeautifulSoup and mimmms.
+
+### On a Mac
+
     sudo easy_install mechanize
     sudo easy_install BeautifulSoup
     sudo port install mimms
-    echo "my_username = \"[YOUR ID]\"; my_password = \"[YOUR PASSWORD]\"" > passwords.py
+
+( using MacPorts to install mimms here)
+
+### On Linux / Windows
+
+Download and manually install from sources.
+
 
 Running
 =======
-    python scrape.py [Name of the course as listed on SCPD]
+    python scrape.py
 
-You can leave out your company's name from the name of the course on SCPD. So, for example, if the course name as listed on SCPD is "Your Company Name - Silicon Run Series XOXO1O8 - OO1 ", you can do
+The script will prompt you for your username, password and the course that you're looking for. You can enter a part of the course name. You can leave out your company's name or course code from the name of the course on SCPD. So, for example, if the course name as listed on SCPD is "Your Company Name - Silicon Run Series XOXO1O8 - OO1 ", you can do
 
     python scrape.py "Silicon Run Series"
 
 Notes
 =====
-This by default runs 5 concurrent streams, if you want to up this, change the line that says processes=5
+scrape-scpd-videos runs 5 concurrent streams, by default. To change this, modify the number in the line that says `processes=5`.
 
-This also does no magic encoding because that can be done later (i.e. after Stanford takes everything down) and people might be picky on what format they want anyway.
+This script does no magic encoding on the downloaded videos.
 
 Until the stream finishes it puts it at a temporary filename prefixed by a "_", that way if everything dies you don't have to go see which one's didn't fully download by opening them.  There's a mimms flag to resume automatically too, but I'm not sure of what happens when there is nothing to resume.
 
-Since this uses multiprocessing, it might be tricky to Ctrl-C out of.  You can always just `killall python`
+Since this uses multiprocessing, it might be tricky to Ctrl-C out of. You can always just `killall python`

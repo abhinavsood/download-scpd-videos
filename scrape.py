@@ -64,7 +64,7 @@ if __name__ == '__main__':
 	
 	print "\n## Enter course title ##\n"
 	# find the link to videos of the requested course
-	cell = soup.find(text=re.compile(raw_input('Course: '))).parent
+	cell = soup.find(text=re.compile(raw_input('Course: '), re.IGNORECASE)).parent
 	while cell.name != 'h3': cell = cell.parent
 	videosLink = cell.findNext('a', text=re.compile('Online Videos')).parent
 	
